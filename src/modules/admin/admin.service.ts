@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { User, UserRole } from '../users/entities/user.entity';
 import { PatientAssessment } from '../patients/entities/patient-assessment.entity';
@@ -103,55 +103,6 @@ export class AdminService {
       lastName: user.profile?.lastName ?? '',
       status: user.isVerified ? 'verified' : 'pending',
     }));
-  }
-
-  async suspendUser(userId: string) {
-    const userRepo = this.dataSource.getRepository(User);
-    const user = await userRepo.findOne({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    user.isActive = false;
-    await userRepo.save(user);
-    return {
-      message: 'User suspended successfully',
-      userId: user.id,
-      isActive: user.isActive,
-    };
-  }
-
-  async activateUser(userId: string) {
-    const userRepo = this.dataSource.getRepository(User);
-    const user = await userRepo.findOne({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    user.isActive = true;
-    await userRepo.save(user);
-    return {
-      message: 'User activated successfully',
-      userId: user.id,
-      isActive: user.isActive,
-    };
-  }
-
-  async deleteUser(userId: string) {
-    const userRepo = this.dataSource.getRepository(User);
-    const result = await userRepo.delete(userId);
-
-    if (!result.affected) {
-      throw new NotFoundException('User not found');
-    }
-
-    return { message: 'User removed successfully', userId };
   }
 
   async listAssessments() {

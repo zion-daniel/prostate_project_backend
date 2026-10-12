@@ -164,22 +164,6 @@ export class AuthService {
     };
   }
 
-  async resendVerificationEmail(email: string) {
-    const user = await this.usersService.findByEmail(email);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    if (user.isVerified) {
-      throw new BadRequestException('User is already verified');
-    }
-    const token = await this.authUtils.generateToken();
-    await this.authRepository.createToken(user.id, email, token);
-    await this.mailService.queueVerificationEmail(email, token);
-    return {
-      message: 'Verification email sent successfully',
-    };
-  }
-
   async refreshAccessToken(refreshToken?: string) {
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token is missing');

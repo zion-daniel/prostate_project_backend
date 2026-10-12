@@ -15,7 +15,6 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import type { Response } from 'express';
 import { LoginDto } from './dto/login.dto';
-import { ResendEmail } from './dto/verify-email.dto';
 import { env } from '../../config/env';
 import { setAccessTokenCookie, setAuthCookies } from './utils/cookie.util';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -96,13 +95,5 @@ export class AuthController {
   @Get('me')
   getCurrentUser(@CurrentUser() user: CurrentUserData) {
     return this.authService.getCurrentUser(user.sub);
-  }
-
-  @Public()
-  @ApiOperation({ summary: 'Resend verification email' })
-  @HttpCode(HttpStatus.OK)
-  @Post('resend-verification-email')
-  async resendVerificationEmail(@Body() dto: ResendEmail) {
-    return this.authService.resendVerificationEmail(dto.email);
   }
 }
